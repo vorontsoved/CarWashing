@@ -1,20 +1,13 @@
-import { IAuthRepo } from "../repository/repository.js";
+import { Sequelize } from "sequelize";
+import { IAuthRepo, Repository } from "../repository/repository.js";
 import { IAuthService } from "./service.js";
 
-
-
-const signIn = (authRepo: IAuthRepo): void => {
-    console.log()
-}
-
-const signUp = (authRepo: IAuthRepo): void => {
-    console.log()
-}
-
-export const newAuth = (authRepo: IAuthRepo): IAuthService => {
-    const newAuth: IAuthService = {
-        signIn: () => signIn(authRepo),
-        signUp: () => signUp(authRepo)
+export class AuthService implements IAuthService {
+    repository: IAuthRepo
+    constructor(repository: IAuthRepo){
+        this.repository = repository
     }
-    return newAuth
+    signIn = () => {}
+    signUp = () => {}
+    
 }

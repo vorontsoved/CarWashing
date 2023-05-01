@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize"
-import { newAuth } from "./auth_postgres.js";
+import { AuthPostgres } from "./auth_postgres.js";
 
 
 export interface IAuthRepo {
@@ -8,20 +8,13 @@ export interface IAuthRepo {
     signUp: () => void;
 }
 
-
-
-
-
-
-
-export interface Repository {
+export type Repository = {
     auth: IAuthRepo
 }
 
-
 export const createNewRepository = (db: Sequelize): Repository => {
     const newRepo: Repository = {
-        auth: newAuth(db)
+        auth: new AuthPostgres(db)
     }
 
     return newRepo

@@ -1,27 +1,24 @@
 import { Router } from 'express'
-import { Services } from '../service/service.js'
 import { singIn } from './auth_controller.js'
+import { Services } from '../service/service.js'
 
 
-const initRoutes = (routes: Router, services: Services,): Router => {
-
-    routes.get('/api/singIn', (req, res) => singIn(req, res, services))
-
-    return routes
-}
-
-export interface Handler {
-
+interface IHandler {
+    services: Services
     initRoutes: (routes: Router, services: Services) => Router
 }
 
-
-
-
-export const createNewHandler = (services: Services): Handler => {
-    const newHandler: Handler = {
-        initRoutes: initRoutes
+export class Handler implements IHandler {
+    services: Services
+    constructor(services: Services){
+        this.services = services
     }
 
-    return newHandler
+    initRoutes = (routes: Router): Router => {
+        routes.use('/api/auth', () => {})
+        routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
+        routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
+
+        return routes
+    }
 }
