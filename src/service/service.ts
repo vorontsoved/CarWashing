@@ -2,9 +2,10 @@ import { IAuthRepo, Repository } from "../repository/repository.js";
 import { AuthService } from "./Auth.js";
 
 
+
 export interface IAuthService {
     repository: IAuthRepo,
-    signIn: () => void;
+    signIn: (login: string, password: string) => object;
     signUp: () => void;
 }
 

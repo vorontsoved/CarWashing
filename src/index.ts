@@ -27,15 +27,6 @@ try {
   process.exit(1);
 }
 
-const user = db.User.create({
-  login: 'john_doe',
-  password_hash: '12345',
-  sald: '100',
-})
-
-
-console.log(user)
-
 const Repository = createNewRepository(db);
 
 const services = createNewServices(Repository)

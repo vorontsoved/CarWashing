@@ -4,11 +4,17 @@ import { IAuthService } from "./service.js";
 
 export class AuthService implements IAuthService {
     repository: IAuthRepo
-    constructor(repository: IAuthRepo){
+    constructor(repository: IAuthRepo) {
         this.repository = repository
     }
 
-    signIn = () => {console.log()}
-    signUp = () => {console.log()}
-    
+    signIn = (login: string, password: string): object => {
+        console.log('Запуск функции авторизации')
+
+        return {
+
+        }
+    }
+    signUp = () => { console.log() }
+
 }
