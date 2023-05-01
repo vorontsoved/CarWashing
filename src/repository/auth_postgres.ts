@@ -6,6 +6,6 @@ export class AuthPostgres implements IAuthRepo {
     constructor(db:Sequelize){
         this.db = db
     }
-    signIn = () => {}
-    signUp = () => {}
+    signIn = () => {console.log}
+    signUp = () => {console.log}
 }

@@ -7,7 +7,7 @@ export class AuthService implements IAuthService {
     constructor(repository: IAuthRepo){
         this.repository = repository
     }
-    signIn = () => {}
-    signUp = () => {}
+    signIn = () => {console.log()}
+    signUp = () => {console.log()}
     
 }

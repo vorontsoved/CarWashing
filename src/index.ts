@@ -11,7 +11,7 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-const db = createSequelizeConnection(
+const db = await createSequelizeConnection(
   process.env.DB_NAME as string,
   process.env.DB_USER as string,
   process.env.DB_HOST as string,
@@ -20,7 +20,7 @@ const db = createSequelizeConnection(
 );
 
 try {
-  await db.authenticate()
+  await db.sequelize.authenticate()
   console.log('Соединение с БД было успешно установлено')
 } catch (e) {
   console.log('Невозможно выполнить подключение к БД: ', e)
@@ -41,7 +41,7 @@ const server = app.listen(port, () => {
 
 const shutdown = async () => {
   try{
-    await db.close()
+    await db.sequelize.close()
     console.log('Соединение с БД успешно закрыто')
   }catch(e){
     console.log('Соединение с БД не удалось закрыть')

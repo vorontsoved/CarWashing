@@ -15,7 +15,7 @@ export class Handler implements IHandler {
     }
 
     initRoutes = (routes: Router): Router => {
-        routes.use('/api/auth', () => {})
+        routes.use('/api/auth', () => {console.log})
         routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
         routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
 
