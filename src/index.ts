@@ -27,6 +27,15 @@ try {
   process.exit(1);
 }
 
+const user = db.User.create({
+  login: 'john_doe',
+  password_hash: '12345',
+  sald: '100',
+})
+
+
+console.log(user)
+
 const Repository = createNewRepository(db);
 
 const services = createNewServices(Repository)
@@ -40,10 +49,10 @@ const server = app.listen(port, () => {
 });
 
 const shutdown = async () => {
-  try{
+  try {
     await db.sequelize.close()
     console.log('Соединение с БД успешно закрыто')
-  }catch(e){
+  } catch (e) {
     console.log('Соединение с БД не удалось закрыть')
   }
   server.close((err) => {
