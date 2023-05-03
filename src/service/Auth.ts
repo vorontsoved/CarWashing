@@ -15,6 +15,14 @@ export class AuthService implements IAuthService {
 
         }
     }
+
+    check = (login: string, password: string): object => {
+        console.log('Запуск функции проверки пользователя')
+
+        return {
+
+        }
+    }
     signUp = () => { console.log() }
 
 }

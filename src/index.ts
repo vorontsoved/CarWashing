@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
-import createSequelizeConnection from './repository/postgres.js';
+import { createSequelizeConnection } from './repository/postgres.js';
 import { createNewRepository } from './repository/repository.js';
 import { createNewServices } from './service/service.js';
 import { Handler } from './handler/handler.js';

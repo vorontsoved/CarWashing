@@ -1,17 +1,16 @@
-import { Sequelize } from "sequelize";
+import { IDB } from "./postgres.js";
 import { IAuthRepo } from "./repository.js";
 
 export class AuthPostgres implements IAuthRepo {
-    db: Sequelize;
-    constructor(db: Sequelize) {
+    db: IDB;
+    constructor(db: IDB) {
         this.db = db
     }
     //db.user.create()
     signIn = () => { console.log }
     signUp = () => { console.log }
-    findOne = () => this.db.user.findOne({
+    findOne = (login: string) => this.db.sequelize.afterBulkDestroy.
 
-    })
     // findOne = (login: string) => (
     //     {
     //         where: {

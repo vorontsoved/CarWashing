@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { singIn } from './auth_controller.js'
+import { singIn, checkU } from './auth_controller.js'
 import { Services } from '../service/service.js'
 
 
@@ -17,7 +17,8 @@ export class Handler implements IHandler {
     initRoutes = (routes: Router): Router => {
         routes.use('/api/auth', () => {console.log})
         routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
-        routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
+        routes.post('/api/auth/check', (req, res) => checkU(req, res, this.services.auth))
+        // routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
 
         return routes
     }
