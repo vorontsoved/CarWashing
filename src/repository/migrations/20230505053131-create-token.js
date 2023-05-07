@@ -2,20 +2,21 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Tokens', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      login: {
-        type: Sequelize.STRING
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
       },
-      password_hash: {
-        type: Sequelize.STRING
-      },
-      salt: {
+      refresh_token: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -26,9 +27,19 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+
+    });
+    await queryInterface.addConstraint('Tokens', {
+      fields: ['user_id'],
+      type: 'foreign key',
+      name: 'tokens_user_id_fk',
+      references: {
+        table: 'Users',
+        field: 'id'
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Tokens');
   }
 };
