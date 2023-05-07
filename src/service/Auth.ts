@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { genSaltSync, hashSync } from 'bcrypt-ts'
+import { genSaltSync, hashSync, compare } from 'bcrypt-ts'
 import jwt from 'jsonwebtoken'
 
 import { IAuthRepo, Repository } from '../repository/repository.js'
@@ -48,8 +48,8 @@ export class AuthService implements IAuthService {
     if (results !== null) {
       throw ApiError.BadRequest('Такой логин уже занят')
     }
-    const salt = genSaltSync(this.saltLength)
-    const hash = hashSync(password_hash, salt)
+    const salt: string = genSaltSync(this.saltLength)
+    const hash: string = hashSync(password_hash, salt)
     const createUser = await this.repository.signUp(login, hash, salt)
     const User = new UserDto(createUser)
     const tokens = await this.generateToken(User)
@@ -60,10 +60,21 @@ export class AuthService implements IAuthService {
   }
 
   signIn = async (login: string, password_hash: string): Promise<IResp> => {
-
-
+    const results = await this.repository.findOne(login)
+    if (results === null) {
+      throw ApiError.BadRequest('Вы не зарегестрированы')
+    }
+    const User = new UserDto(results)
+    const isPassEquals = await compare(password_hash, results?.get('password_hash') as string);
+    if (!isPassEquals) {
+      throw ApiError.BadRequest('Пароль неверный')
+    }
+    const tokens = await this.generateToken(User);
+    const saveToken = await this.saveToken(User.id, tokens.refreshToken)
     return {
-      data: { "id": 21 }
+      data: {
+        "id": User.id, "login": User.login, "refresh_token": saveToken?.refreshToken, "access_token": tokens?.accessToken
+      }
     }
   }
   check = async (login: string): Promise<IResp> => {

@@ -20,14 +20,14 @@ export const signUp = async (req: Request, res: Response, auth: IAuthService, ne
     next(error)
   }
 }
-export const signIn = async (req: Request, res: Response, auth: IAuthService): Promise<any> => {
+export const signIn = async (req: Request, res: Response, auth: IAuthService, next: NextFunction): Promise<any> => {
   try {
     const { login, password } = req.body
     const password_hash = password.toString()
     const result = await auth.signIn(login, password_hash)
-    res.status(200).json({ message: 'Успешно зарегестрирован', userParams: result })
+    res.status(200).json({ message: 'Вы авторизованы', userParams: result })
   } catch (error) {
-    
+    next(error)
   }
 }
 export const checkU = async (req: Request, res: Response, auth: IAuthService): Promise<void> => {

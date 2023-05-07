@@ -24,7 +24,8 @@ export class Handler implements IHandler {
     routes.post('/api/auth/signUp',
       validateSignUp,
       (req: Request, res: Response, next: NextFunction) => signUp(req, res, this.services.auth, next))
-    routes.post('/api/auth/signIn', (req: Request, res: Response) => signIn(req, res, this.services.auth))
+    routes.post('/api/auth/signIn', 
+      (req: Request, res: Response, next: NextFunction) => signIn(req, res, this.services.auth, next))
     routes.post('/api/auth/check', (req: Request, res: Response) => checkU(req, res, this.services.auth))
     // routes.post('/api/auth/singIn', (req, res) => singIn(req, res, this.services.auth))
 

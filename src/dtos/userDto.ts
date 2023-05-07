@@ -8,6 +8,7 @@ export default class UserDto implements JsonSerializable {
   id: number;
   login: string;
 
+
   constructor(model: Model | null) {
     this.id = model?.get('id') as number;
     this.login = model?.get('login') as string;
@@ -16,7 +17,7 @@ export default class UserDto implements JsonSerializable {
   toJSON(): object {
     return {
       id: this.id,
-      login: this.login,
+      login: this.login
     };
   }
 }
