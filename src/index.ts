@@ -1,12 +1,16 @@
-import express, { Express } from 'express'
+import express, { Express, Request } from 'express'
 import dotenv from 'dotenv'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+
 import { createSequelizeConnection } from './repository/postgres.js'
 import { createNewRepository } from './repository/repository.js'
 import { createNewServices } from './service/service.js'
 import { Handler } from './handler/handler.js'
 import { Dialect } from 'sequelize'
-import bodyParser from 'body-parser'
 import errorMiddlewares from './middlewares/error-middlewares.js'
+import Context from './utils/context.js'
+
 dotenv.config()
 
 const app: Express = express()
@@ -34,6 +38,11 @@ const services = createNewServices(Repository)
 const handler = new Handler(services)
 
 app.use(bodyParser.json({ limit: '50mb' }))
+app.use(cookieParser())
+app.use((req: Request, res: any, next: any) => {
+  Context.bind(req);
+  next();
+});
 app.use(handler.initRoutes(express.Router()))
 app.use(errorMiddlewares)
 

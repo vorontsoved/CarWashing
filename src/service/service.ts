@@ -11,7 +11,9 @@ export interface IAuthService {
 
   signUp: (login: string, password_hash: string) => Promise<IResp>
   signIn: (login: string, password_hash: string) => Promise<IResp>
-  check: (login: string) => Promise<IResp>
+  signOut: (refresh_token: string) => Promise<number>
+  refresh: (refresh_token: string) => Promise<any>
+  getUsers: () => Promise<any>
   //   signUp: () => void
 }
 

@@ -25,7 +25,6 @@ export class AuthPostgres implements IAuthRepo {
     })
   }
 
-
   findOneToken = (userId: number) => {
     return this.db.sequelize.models.Token.findOne({
       where: {
@@ -51,11 +50,21 @@ export class AuthPostgres implements IAuthRepo {
       }
     )
   }
-
-  // findOne = (login: string) => (
-  //     {
-  //         where: {
-  //             login: login
-  //         }
-  //     })
+  removeToken = (refreshToken: string) => {
+    return this.db.sequelize.models.Token.destroy({
+      where: {
+        refresh_token: refreshToken
+      }
+    })
+  }
+  findToken = (refreshToken: string) => {
+    return this.db.sequelize.models.Token.findOne({
+      where: {
+        refresh_token: refreshToken
+      }
+    })
+  }
+  getAllUsers = () => {
+    return this.db.sequelize.models.Token.findAll()
+  }
 }

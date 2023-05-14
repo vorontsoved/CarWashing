@@ -17,9 +17,27 @@ export class AuthService implements IAuthService {
     this.repository = repository
   }
 
-  generateToken = async (payload: UserDto) => {
-    const accessToken = jwt.sign(payload.toJSON(), process.env.JWT_ACCESS_SECRET as jwt.Secret, { expiresIn: '2d' });
-    const refreshToken = jwt.sign(payload.toJSON(), process.env.JWT_REFRESH_SECRET as jwt.Secret, { expiresIn: '30d' });
+  static validateAccessToken(token: string): any {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET as jwt.Secret)
+      return userData;
+    } catch (error) {
+      return null
+    }
+  }
+
+  validateRefreshToken(token: string): any {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET as jwt.Secret)
+      return userData;
+    } catch (error) {
+      return null
+    }
+  }
+
+  generateToken = async (payload: UserDto ): Promise<any> => {
+    const accessToken = jwt.sign(payload.toJwtToken(), process.env.JWT_ACCESS_SECRET as jwt.Secret, { expiresIn: '2d' });
+    const refreshToken = jwt.sign(payload.toJwtToken(), process.env.JWT_REFRESH_SECRET as jwt.Secret, { expiresIn: '30d' });
     return {
       accessToken,
       refreshToken,
@@ -29,12 +47,14 @@ export class AuthService implements IAuthService {
 
 
 
-  saveToken = async (userId: number, refreshToken: string) => {
+  saveToken = async (userId: number, refreshToken: string): Promise<any | TokenDto> => {
     const tokenData = await this.repository.findOneToken(userId)
     if (tokenData) {
       const ref = await this.repository.updateRefresh(userId, refreshToken)
-      console.log('refreshTokenWheHeIs', ref)
-      return
+      if (!ref) {
+        throw ApiError.BadRequest('Ошибка авторизации, refresh_token не обновился')
+      }
+      return { 'refreshToken': refreshToken }
     }
     const t = await this.repository.createRefresh(userId, refreshToken)
     const token = new TokenDto(t)
@@ -65,7 +85,7 @@ export class AuthService implements IAuthService {
       throw ApiError.BadRequest('Вы не зарегестрированы')
     }
     const User = new UserDto(results)
-    const isPassEquals = await compare(password_hash, results?.get('password_hash') as string);
+    const isPassEquals = await compare(password_hash, User.password);
     if (!isPassEquals) {
       throw ApiError.BadRequest('Пароль неверный')
     }
@@ -77,7 +97,38 @@ export class AuthService implements IAuthService {
       }
     }
   }
-  check = async (login: string): Promise<IResp> => {
-    return { data: '62626626' }
+
+
+
+
+  signOut = async (refresh_token: string): Promise<number> => {
+    const token = this.repository.removeToken(refresh_token)
+    console.log(token)
+    return token
+  }
+
+  refresh = async (refresh_token: string): Promise<any> => {
+    if (!refresh_token) {
+      throw ApiError.UnauthorizedError()
+    }
+    const userData = this.validateRefreshToken(refresh_token);
+    const tokenFromDb = await this.repository.findToken(refresh_token)
+    if (!userData || !tokenFromDb) {
+      throw ApiError.UnauthorizedError()
+    }
+    const modelUser = await this.repository.findOne(userData.login) //ХЗ
+    const User = new UserDto(modelUser)
+    const tokens = await this.generateToken(User);
+    const saveToken = await this.saveToken(User.id, tokens.refreshToken)
+    return {
+      data: {
+        "id": User.id, "login": User.login, "refresh_token": saveToken?.refreshToken, "access_token": tokens?.accessToken
+      }
+    }
+  }
+
+  getUsers = async (): Promise<any> => {
+    const users = this.repository.getAllUsers()
+    return users
   }
 }

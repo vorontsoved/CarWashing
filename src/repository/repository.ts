@@ -8,8 +8,11 @@ export interface IAuthRepo {
   signUp: (login: string, hash: string, salt: string) => Promise<Model | null>
   createRefresh: (userId: number, refreshToken: string) => Promise<Model | null>
   updateRefresh: (userId: number, refreshToken: string) => Promise<[affectedCount: number]>
+  removeToken: (refreshToken: string) => Promise<number>
+  findToken: (refreshToken: string) => Promise<Model | null>
   findOneToken: (UserId: number) => Promise<Model | null>
   findOne: (login: string) => Promise<Model | null>
+  getAllUsers: () =>  Promise<Model<any, any>[]>
 }
 
 export type Repository = {
